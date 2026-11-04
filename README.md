@@ -11,4 +11,9 @@ The Space config (YAML front matter) lives in each unit's `README.md`, not here.
 
 - **Automatically:** every push to `main` on GitHub runs `.github/workflows/deploy-spaces.yml`
   (needs an `HF_TOKEN` repo secret with write access). Add a matrix entry per new unit.
-- **Manually:** commit, then `./deploy_space.sh unit1/agent_shopping_list MiguelBayanSoares/shopping_list`
+- **Manually** (commit first; `./deploy_space.sh --help` for details):
+  ```bash
+  ./deploy_space.sh unit1/agent_shopping_list MiguelBayanSoares/shopping_list      # unit -> HF Space
+  ./deploy_space.sh github                                                         # repo -> GitHub
+  ./deploy_space.sh all unit1/agent_shopping_list MiguelBayanSoares/shopping_list  # both
+  ```
