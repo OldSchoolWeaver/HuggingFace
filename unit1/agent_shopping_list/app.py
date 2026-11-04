@@ -5,34 +5,26 @@ plan, scale it to the household and build the consolidated shopping list.
 """
 import os
 
-import yaml
-from smolagents import CodeAgent, HfApiModel
+from smolagents import CodeAgent, DuckDuckGoSearchTool, InferenceClientModel
 
 from Gradio_UI import GradioUI
-from tools.final_answer import FinalAnswerTool
 from tools.meal_plan import MealPlan, meal_plan_tools
 from tools.visit_webpage import VisitWebpageTool
-from tools.web_search import DuckDuckGoSearchTool
 
 # Change the model without touching code: set MODEL_ID / HF_PROVIDER as Space variables.
-# HF_TOKEN (Space secret) is picked up automatically for inference.
-model = HfApiModel(
-    # Must be served by an Inference Provider you have enabled (see the model page's "Inference Providers"
-    # panel and https://huggingface.co/settings/inference-providers). Override with the MODEL_ID variable.
-    model_id=os.getenv("MODEL_ID", "Qwen/Qwen3-Coder-480B-A35B-Instruct:featherless-ai"),
+# The model must be served by an Inference Provider you have enabled (see the model page's
+# "Inference Providers" panel and https://huggingface.co/settings/inference-providers).
+# HF_TOKEN (Space secret) is picked up automatically.
+model = InferenceClientModel(
+    model_id=os.getenv("MODEL_ID", "Qwen/Qwen3-Coder-480B-A35B-Instruct"),
     provider=os.getenv("HF_PROVIDER") or None,
     max_tokens=4096,  # a full week of recipes needs room
     temperature=0.4,
-    custom_role_conversions=None,
 )
 
 MEAL_PLANNER_INSTRUCTIONS = """
-
----
-## Your job: weekly meal planner and shopping list
-
-You plan a week of meals and produce a consolidated shopping list. You have dedicated tools for this:
-start_meal_plan, add_recipe, remove_recipe, view_meal_plan, build_shopping_list, plus web_search and visit_webpage.
+You are a weekly meal planner. You plan a week of meals and produce a consolidated shopping list using the
+tools start_meal_plan, add_recipe, remove_recipe, view_meal_plan, build_shopping_list, web_search and visit_webpage.
 
 Workflow for a NEW plan:
 1. Work out the requirements. When the user does not say, assume: 7 days (Monday to Sunday), dinner only,
@@ -48,7 +40,7 @@ Workflow for a NEW plan:
    [dict(name="chicken thigh", quantity=500, unit="g"), dict(name="onion", quantity=2, unit="")]
    Name = the bare ingredient (no "chopped", "fresh"...). Use metric units where you can.
    Give quantities for the recipe as written plus its servings: the tool scales to the household itself.
-   You may add several recipes in the same code block.
+   Add several recipes in the same code block to save steps.
 6. Finish with exactly:
    plan = view_meal_plan()
    shopping = build_shopping_list()
@@ -60,10 +52,6 @@ do NOT call start_meal_plan; use add_recipe (it replaces a slot) or remove_recip
 Never do the shopping-list maths yourself - build_shopping_list does the scaling, unit conversion and merging.
 """
 
-with open("prompts.yaml", "r") as stream:
-    prompt_templates = yaml.safe_load(stream)
-prompt_templates["system_prompt"] += MEAL_PLANNER_INSTRUCTIONS
-
 plan = MealPlan()
 
 agent = CodeAgent(
@@ -72,15 +60,10 @@ agent = CodeAgent(
         DuckDuckGoSearchTool(max_results=5),
         VisitWebpageTool(),
         *meal_plan_tools(plan),
-        FinalAnswerTool(),  # don't remove final answer
-    ],
+    ],  # final_answer is added automatically
+    instructions=MEAL_PLANNER_INSTRUCTIONS,
     max_steps=15,
     verbosity_level=1,
-    grammar=None,
-    planning_interval=None,
-    name=None,
-    description=None,
-    prompt_templates=prompt_templates,
 )
 
 if __name__ == "__main__":
