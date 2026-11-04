@@ -14,11 +14,12 @@
 # Only COMMITTED changes are deployed.
 # HF:     uses $HF_TOKEN if set, otherwise your git credentials. The Space is force-pushed (it's a build target).
 # GitHub: pushes the current branch to $GITHUB_URL with a normal (non-force) push, so history is never overwritten.
+#         Uses $GITHUB_TOKEN (a PAT of an account with write access) if set, otherwise your git credentials.
 set -euo pipefail
 
 GITHUB_URL="${GITHUB_URL:-https://github.com/OldSchoolWeaver/HuggingFace.git}"
 
-usage() { sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+usage() { sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 
 warn_uncommitted() {
   if [[ -n "$(git status --porcelain)" ]]; then
@@ -30,8 +31,12 @@ deploy_github() {
   local branch
   branch="$(git branch --show-current)"
   [[ -n "$branch" ]] || { echo "❌ Not on a branch (detached HEAD)."; exit 1; }
+  local url="$GITHUB_URL"
+  if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+    url="https://x-access-token:${GITHUB_TOKEN}@${GITHUB_URL#https://}"
+  fi
   echo "→ Pushing '$branch' to GitHub ($GITHUB_URL)"
-  git push "$GITHUB_URL" "$branch:$branch"
+  git push "$url" "$branch:$branch"
   echo "✅ GitHub updated: ${GITHUB_URL%.git}/tree/$branch"
 }
 
