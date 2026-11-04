@@ -33,6 +33,9 @@ class GradioUI(_SmolagentsGradioUI):
             title=self.title,
             description=self.description,
             examples=self.examples,
+            # Spaces cache examples by default, i.e. run the whole agent for every example at startup:
+            # slow, burns inference credits and crashes on Gradio 5.x with agent step messages.
+            cache_examples=False,
             save_history=True,
             **type_messages,
         )
