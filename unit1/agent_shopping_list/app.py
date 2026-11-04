@@ -1,69 +1,100 @@
-from smolagents import CodeAgent,DuckDuckGoSearchTool, HfApiModel,load_tool,tool
-import datetime
-import requests
-import pytz
+"""Weekly meal planner + shopping list agent (smolagents CodeAgent + Gradio).
+
+The LLM finds and picks recipes; deterministic tools in tools/meal_plan.py keep the
+plan, scale it to the household and build the consolidated shopping list.
+"""
+import os
+
 import yaml
-from tools.final_answer import FinalAnswerTool
+from smolagents import CodeAgent, HfApiModel
 
 from Gradio_UI import GradioUI
+from tools.final_answer import FinalAnswerTool
+from tools.meal_plan import MealPlan, meal_plan_tools
+from tools.visit_webpage import VisitWebpageTool
+from tools.web_search import DuckDuckGoSearchTool
 
-# Below is an example of a tool that does nothing. Amaze us with your creativity !
-@tool
-def my_custom_tool(arg1:str, arg2:int)-> str: #it's import to specify the return type
-    #Keep this format for the description / args / args description but feel free to modify the tool
-    """A tool that does nothing yet 
-    Args:
-        arg1: the first argument
-        arg2: the second argument
-    """
-    return "What magic will you build ?"
-
-@tool
-def get_current_time_in_timezone(timezone: str) -> str:
-    """A tool that fetches the current local time in a specified timezone.
-    Args:
-        timezone: A string representing a valid timezone (e.g., 'America/New_York').
-    """
-    try:
-        # Create timezone object
-        tz = pytz.timezone(timezone)
-        # Get current time in that timezone
-        local_time = datetime.datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
-        return f"The current local time in {timezone} is: {local_time}"
-    except Exception as e:
-        return f"Error fetching time for timezone '{timezone}': {str(e)}"
-
-
-final_answer = FinalAnswerTool()
-
-# If the agent does not answer, the model is overloaded, please use another model or the following Hugging Face Endpoint that also contains qwen2.5 coder:
-# model_id='https://pflgm2locj2t89co.us-east-1.aws.endpoints.huggingface.cloud' 
-
+# Change the model without touching code: set MODEL_ID / HF_PROVIDER as Space variables.
+# HF_TOKEN (Space secret) is picked up automatically for inference.
 model = HfApiModel(
-max_tokens=2096,
-temperature=0.5,
-model_id='Qwen/Qwen2.5-Coder-32B-Instruct',# it is possible that this model may be overloaded
-custom_role_conversions=None,
+    # Must be served by an Inference Provider you have enabled (see the model page's "Inference Providers"
+    # panel and https://huggingface.co/settings/inference-providers). Override with the MODEL_ID variable.
+    model_id=os.getenv("MODEL_ID", "Qwen/Qwen3-Coder-480B-A35B-Instruct:featherless-ai"),
+    provider=os.getenv("HF_PROVIDER") or None,
+    max_tokens=4096,  # a full week of recipes needs room
+    temperature=0.4,
+    custom_role_conversions=None,
 )
 
+MEAL_PLANNER_INSTRUCTIONS = """
 
-# Import tool from Hub
-image_generation_tool = load_tool("agents-course/text-to-image", trust_remote_code=True)
+---
+## Your job: weekly meal planner and shopping list
 
-with open("prompts.yaml", 'r') as stream:
+You plan a week of meals and produce a consolidated shopping list. You have dedicated tools for this:
+start_meal_plan, add_recipe, remove_recipe, view_meal_plan, build_shopping_list, plus web_search and visit_webpage.
+
+Workflow for a NEW plan:
+1. Work out the requirements. When the user does not say, assume: 7 days (Monday to Sunday), dinner only,
+   2 people, no dietary restrictions. Respect every diet, allergy, budget, cuisine or time constraint given.
+2. Call start_meal_plan(people=..., notes=...) exactly once.
+3. Choose a varied week: rotate proteins and cuisines, no repeated dish, and reuse fresh ingredients across
+   days (e.g. half a bunch of coriander on Monday, the rest on Thursday) to cut waste and cost.
+4. Find real recipes efficiently: run several web_search calls inside ONE code block with a for loop and print
+   short results. Only use visit_webpage when you need exact quantities, and at most 3 times in total;
+   print only the ingredients/method part of a page, never the whole page. If searching or a page fails,
+   write a sound recipe from your own cooking knowledge instead of retrying - that is fine.
+5. Call add_recipe once per meal. ingredients is a list of dicts, e.g.
+   [dict(name="chicken thigh", quantity=500, unit="g"), dict(name="onion", quantity=2, unit="")]
+   Name = the bare ingredient (no "chopped", "fresh"...). Use metric units where you can.
+   Give quantities for the recipe as written plus its servings: the tool scales to the household itself.
+   You may add several recipes in the same code block.
+6. Finish with exactly:
+   plan = view_meal_plan()
+   shopping = build_shopping_list()
+   final_answer(plan + "\\n\\n" + shopping)
+
+Changing an EXISTING plan (e.g. "swap Wednesday for something vegetarian", "add lunches"):
+do NOT call start_meal_plan; use add_recipe (it replaces a slot) or remove_recipe, then finish with step 6.
+
+Never do the shopping-list maths yourself - build_shopping_list does the scaling, unit conversion and merging.
+"""
+
+with open("prompts.yaml", "r") as stream:
     prompt_templates = yaml.safe_load(stream)
-    
+prompt_templates["system_prompt"] += MEAL_PLANNER_INSTRUCTIONS
+
+plan = MealPlan()
+
 agent = CodeAgent(
     model=model,
-    tools=[final_answer], ## add your tools here (don't remove final answer)
-    max_steps=6,
+    tools=[
+        DuckDuckGoSearchTool(max_results=5),
+        VisitWebpageTool(),
+        *meal_plan_tools(plan),
+        FinalAnswerTool(),  # don't remove final answer
+    ],
+    max_steps=15,
     verbosity_level=1,
     grammar=None,
     planning_interval=None,
     name=None,
     description=None,
-    prompt_templates=prompt_templates
+    prompt_templates=prompt_templates,
 )
 
-
-GradioUI(agent).launch()
+if __name__ == "__main__":
+    GradioUI(
+        agent,
+        title="🛒 Weekly Meal Planner",
+        description=(
+            "Tell me who you're cooking for and any preferences. I'll plan the week's meals with recipes "
+            "and build one shopping list grouped by aisle. Ask follow-ups to swap meals and I'll update the list."
+        ),
+        examples=[
+            "Plan dinners for this week for 2 people",
+            "Vegetarian dinners Monday to Friday for a family of 4, kids don't like spicy food",
+            "Mediterranean lunches and dinners for 7 days, 2 people, under 30 minutes each",
+            "High-protein dinners for 1 person, no pork, use leftovers for lunch the next day",
+        ],
+    ).launch()

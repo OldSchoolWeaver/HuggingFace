@@ -141,12 +141,15 @@ def stream_to_gradio(
 
     for step_log in agent.run(task, stream=True, reset=reset_agent_memory, additional_args=additional_args):
         # Track tokens if model provides them
+        # Counts are None when a model call fails (e.g. provider error) - treat as 0 instead of crashing
         if hasattr(agent.model, "last_input_token_count"):
-            total_input_tokens += agent.model.last_input_token_count
-            total_output_tokens += agent.model.last_output_token_count
+            input_tokens = agent.model.last_input_token_count or 0
+            output_tokens = agent.model.last_output_token_count or 0
+            total_input_tokens += input_tokens
+            total_output_tokens += output_tokens
             if isinstance(step_log, ActionStep):
-                step_log.input_token_count = agent.model.last_input_token_count
-                step_log.output_token_count = agent.model.last_output_token_count
+                step_log.input_token_count = input_tokens
+                step_log.output_token_count = output_tokens
 
         for message in pull_messages_from_step(
             step_log,
@@ -178,7 +181,17 @@ def stream_to_gradio(
 class GradioUI:
     """A one-line interface to launch your agent in Gradio"""
 
-    def __init__(self, agent: MultiStepAgent, file_upload_folder: str | None = None):
+    def __init__(
+        self,
+        agent: MultiStepAgent,
+        file_upload_folder: str | None = None,
+        title: str | None = None,
+        description: str | None = None,
+        examples: list[str] | None = None,
+    ):
+        self.title = title
+        self.description = description
+        self.examples = examples or []
         if not _is_package_available("gradio"):
             raise ModuleNotFoundError(
                 "Please install 'gradio' extra to use the GradioUI: `pip install 'smolagents[gradio]'`"
@@ -264,6 +277,8 @@ class GradioUI:
         with gr.Blocks(fill_height=True) as demo:
             stored_messages = gr.State([])
             file_uploads_log = gr.State([])
+            if self.title or self.description:
+                gr.Markdown("\n\n".join(x for x in (f"# {self.title}" if self.title else "", self.description) if x))
             chatbot = gr.Chatbot(
                 label="Agent",
                 type="messages",
@@ -284,6 +299,8 @@ class GradioUI:
                     [upload_status, file_uploads_log],
                 )
             text_input = gr.Textbox(lines=1, label="Chat Message")
+            if self.examples:
+                gr.Examples(examples=self.examples, inputs=text_input, label="Try one of these")
             text_input.submit(
                 self.log_user_message,
                 [text_input, file_uploads_log],

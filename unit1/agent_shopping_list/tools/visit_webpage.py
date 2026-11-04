@@ -1,3 +1,4 @@
+import re
 from typing import Any, Optional
 from smolagents.tools import Tool
 import requests
@@ -23,7 +24,12 @@ class VisitWebpageTool(Tool):
             ) from e
         try:
             # Send a GET request to the URL with a 20-second timeout
-            response = requests.get(url, timeout=20)
+            response = requests.get(
+                url,
+                timeout=20,
+                # many recipe sites block the default python-requests user agent
+                headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"},
+            )
             response.raise_for_status()  # Raise an exception for bad status codes
 
             # Convert the HTML content to Markdown
