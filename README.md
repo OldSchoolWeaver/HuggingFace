@@ -1,13 +1,14 @@
----
-title: Shopping List
-emoji: 🏆
-colorFrom: yellow
-colorTo: blue
-sdk: gradio
-sdk_version: 6.31.0
-python_version: '3.13'
-app_file: app.py
-pinned: false
----
+# Hugging Face Agents Course
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+Each unit lives in its own folder and is deployed as its own Hugging Face Space.
+The Space config (YAML front matter) lives in each unit's `README.md`, not here.
+
+| Unit | Folder | Space |
+|------|--------|-------|
+| 1 | `unit1/agent_shopping_list` | [MiguelBayanSoares/shopping_list](https://huggingface.co/spaces/MiguelBayanSoares/shopping_list) |
+
+## Deploying
+
+- **Automatically:** every push to `main` on GitHub runs `.github/workflows/deploy-spaces.yml`
+  (needs an `HF_TOKEN` repo secret with write access). Add a matrix entry per new unit.
+- **Manually:** commit, then `./deploy_space.sh unit1/agent_shopping_list MiguelBayanSoares/shopping_list`

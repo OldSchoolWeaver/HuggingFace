@@ -1,4 +1,5 @@
-title: Shopping List Agent Template
+---
+title: Shopping List Agent
 emoji: ⚡
 colorFrom: pink
 colorTo: yellow
@@ -12,3 +13,6 @@ tags:
   - smolagent
   - tool
   - agent-course
+---
+
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference

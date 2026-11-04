@@ -1,0 +1,33 @@
+name: Deploy units to Hugging Face Spaces
+
+# Each unit folder is pushed as the ROOT of its own Space (via git subtree split),
+# so the Space finds README.md / app.py / requirements.txt where it expects them.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Add one entry per unit you want to deploy
+          - path: unit1/agent_shopping_list
+            space: MiguelBayanSoares/shopping_list
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push ${{ matrix.path }} -> ${{ matrix.space }}
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          UNIT_PATH: ${{ matrix.path }}
+          SPACE: ${{ matrix.space }}
+        run: |
+          git subtree split --prefix="$UNIT_PATH" -b space-deploy
+          git push --force "https://${SPACE%%/*}:${HF_TOKEN}@huggingface.co/spaces/${SPACE}" space-deploy:main
