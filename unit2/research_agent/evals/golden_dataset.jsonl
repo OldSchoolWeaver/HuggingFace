@@ -1,0 +1,6 @@
+{"id": "who-air-pollution", "question": "What are the main health effects of outdoor air pollution, and what are the WHO guideline values for PM2.5?", "expected_sources": ["who.int"], "min_recall": 1.0}
+{"id": "ipcc-human-influence", "question": "What did the IPCC Sixth Assessment Report (AR6) conclude about human influence on global warming?", "expected_sources": ["ipcc.ch"], "min_recall": 1.0}
+{"id": "transformer-paper", "question": "What is the Transformer architecture introduced in the paper 'Attention Is All You Need'?", "expected_sources": ["arxiv.org/abs/1706.03762", "papers.nips.cc", "proceedings.neurips.cc"], "min_recall": 0.34}
+{"id": "physical-activity-adults", "question": "How much physical activity per week is recommended for adults?", "expected_sources": ["who.int", "cdc.gov"], "min_recall": 0.5}
+{"id": "eu-ai-act-high-risk", "question": "How does the EU AI Act define and regulate high-risk AI systems?", "expected_sources": ["europa.eu"], "min_recall": 1.0}
+{"id": "world-bank-poverty-line", "question": "What is the World Bank's international extreme poverty line and how is it defined?", "expected_sources": ["worldbank.org"], "min_recall": 1.0}

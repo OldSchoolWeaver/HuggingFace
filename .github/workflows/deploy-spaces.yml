@@ -17,6 +17,8 @@ jobs:
           # Add one entry per unit you want to deploy
           - path: unit1/agent_shopping_list
             space: MiguelBayanSoares/shopping_list
+          - path: unit2/research_agent
+            space: MiguelBayanSoares/Research_Agent
     steps:
       - uses: actions/checkout@v4
         with:

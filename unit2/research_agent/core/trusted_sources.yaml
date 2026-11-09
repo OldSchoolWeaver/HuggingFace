@@ -1,0 +1,74 @@
+# Golden records: the only sources the Researcher may cite.
+# An entry matches the domain and all its subdomains ("nih.gov" also matches "pubmed.ncbi.nlm.nih.gov").
+# Entries starting with "." are suffix rules (".gov" matches any US government site).
+# Blocked domains are never golden. Edit this file to change the policy - no code changes needed.
+
+trusted:
+  # Official, intergovernmental and academic
+  - ".gov"
+  - ".edu"
+  - ".int"
+  - ".gov.uk"
+  - ".ac.uk"
+  - ".gov.pt"
+  - ".europa.eu"
+  # International organisations, science, medicine, AI research
+  - who.int
+  - un.org
+  - worldbank.org
+  - imf.org
+  - oecd.org
+  - europa.eu
+  - ipcc.ch
+  - iea.org
+  - nih.gov
+  - cdc.gov
+  - nasa.gov
+  - noaa.gov
+  - nature.com
+  - science.org
+  - thelancet.com
+  - nejm.org
+  - bmj.com
+  - cochranelibrary.com
+  - sciencedirect.com
+  - springer.com
+  - wiley.com
+  - plos.org
+  - arxiv.org
+  - acm.org
+  - ieee.org
+  - neurips.cc
+  - aclanthology.org
+  - openreview.net
+  - proceedings.mlr.press
+  # Reputable secondary sources
+  - wikipedia.org
+  - britannica.com
+  - ourworldindata.org
+  - reuters.com
+  - apnews.com
+  - bbc.co.uk
+  - bbc.com
+  - economist.com
+  - ft.com
+  - pewresearch.org
+  - statista.com
+  - huggingface.co
+  - python.org
+  - github.com
+
+blocked:
+  - medium.com
+  - quora.com
+  - reddit.com
+  - pinterest.com
+  - answers.com
+  - scribd.com
+  - coursehero.com
+  - linkedin.com
+  - facebook.com
+  - x.com
+  - twitter.com
+  - tiktok.com
+  - youtube.com
