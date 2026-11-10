@@ -95,7 +95,7 @@ def research(company: str):
     yield f"✅ Report on **{company}** ready in {time.time() - start:.0f}s", report, research_notes, "  \n".join(log), files
 
 
-with gr.Blocks(title="Financial Researcher", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="Financial Researcher") as demo:
     gr.Markdown(
         "# 📈 Financial Researcher\n"
         "A [crewAI](https://crewai.com) crew researches a company on the web and writes a cited report: "
@@ -119,4 +119,4 @@ with gr.Blocks(title="Financial Researcher", theme=gr.themes.Soft()) as demo:
     company.submit(research, company, outputs, concurrency_limit=1)
 
 if __name__ == "__main__":
-    demo.queue().launch()
+    demo.queue().launch(theme=gr.themes.Soft())
