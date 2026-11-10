@@ -1,0 +1,232 @@
+data: {"data":"===== Application Startup at 2026-11-10 13:21:40 =====\n","timestamp":"2026-11-10T13:21:40Z"}
+
+data: {"data":"* Running on local URL:  http://0.0.0.0:7860, with SSR ⚡ (Node proxy -> Python :7861)","timestamp":"2026-11-10T13:22:10.650Z"}
+
+data: {"data":"* To create a public link, set `share=True` in `launch()`.","timestamp":"2026-11-10T13:22:10.837Z"}
+
+data: {"data":"Exception ignored in: <function BaseEventLoop.__del__ at 0x7ff6b261dc60>","timestamp":"2026-11-10T13:22:11.932Z"}
+
+data: {"data":"Traceback (most recent call last):","timestamp":"2026-11-10T13:22:11.932Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/base_events.py\", line 732, in __del__","timestamp":"2026-11-10T13:22:11.932Z"}
+
+data: {"data":"    self.close()","timestamp":"2026-11-10T13:22:11.932Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/unix_events.py\", line 68, in close","timestamp":"2026-11-10T13:22:11.932Z"}
+
+data: {"data":"    super().close()","timestamp":"2026-11-10T13:22:11.932Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 104, in close","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"    self._close_self_pipe()","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 111, in _close_self_pipe","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"    self._remove_reader(self._ssock.fileno())","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 298, in _remove_reader","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"    key = self._selector.get_key(fd)","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"          ^^^^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 190, in get_key","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"    return mapping[fileobj]","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"           ~~~~~~~^^^^^^^^^","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 71, in __getitem__","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"    fd = self._selector._fileobj_lookup(fileobj)","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 225, in _fileobj_lookup","timestamp":"2026-11-10T13:22:11.933Z"}
+
+data: {"data":"    return _fileobj_to_fd(fileobj)","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"           ^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 42, in _fileobj_to_fd","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"    raise ValueError(\"Invalid file descriptor: {}\".format(fd))","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"ValueError: Invalid file descriptor: -1","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"Exception ignored in: <function BaseEventLoop.__del__ at 0x7ff6b261dc60>","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"Traceback (most recent call last):","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/base_events.py\", line 732, in __del__","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"    self.close()","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/unix_events.py\", line 68, in close","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"    super().close()","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 104, in close","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"    self._close_self_pipe()","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 111, in _close_self_pipe","timestamp":"2026-11-10T13:22:11.934Z"}
+
+data: {"data":"    self._remove_reader(self._ssock.fileno())","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 298, in _remove_reader","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"    key = self._selector.get_key(fd)","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"          ^^^^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 190, in get_key","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"    return mapping[fileobj]","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"           ~~~~~~~^^^^^^^^^","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 71, in __getitem__","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"    fd = self._selector._fileobj_lookup(fileobj)","timestamp":"2026-11-10T13:22:11.935Z"}
+
+data: {"data":"         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 225, in _fileobj_lookup","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"    return _fileobj_to_fd(fileobj)","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"           ^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 42, in _fileobj_to_fd","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"    raise ValueError(\"Invalid file descriptor: {}\".format(fd))","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"ValueError: Invalid file descriptor: -1","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"Exception ignored in: <function BaseEventLoop.__del__ at 0x7ff6b261dc60>","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"Traceback (most recent call last):","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/base_events.py\", line 732, in __del__","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"    self.close()","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/unix_events.py\", line 68, in close","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"    super().close()","timestamp":"2026-11-10T13:22:11.936Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 104, in close","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"    self._close_self_pipe()","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 111, in _close_self_pipe","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"    self._remove_reader(self._ssock.fileno())","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/asyncio/selector_events.py\", line 298, in _remove_reader","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"    key = self._selector.get_key(fd)","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"          ^^^^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 190, in get_key","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"    return mapping[fileobj]","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"           ~~~~~~~^^^^^^^^^","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 71, in __getitem__","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"    fd = self._selector._fileobj_lookup(fileobj)","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 225, in _fileobj_lookup","timestamp":"2026-11-10T13:22:11.937Z"}
+
+data: {"data":"    return _fileobj_to_fd(fileobj)","timestamp":"2026-11-10T13:22:11.938Z"}
+
+data: {"data":"           ^^^^^^^^^^^^^^^^^^^^^^^","timestamp":"2026-11-10T13:22:11.938Z"}
+
+data: {"data":"  File \"/usr/local/lib/python3.12/selectors.py\", line 42, in _fileobj_to_fd","timestamp":"2026-11-10T13:22:11.938Z"}
+
+data: {"data":"    raise ValueError(\"Invalid file descriptor: {}\".format(fd))","timestamp":"2026-11-10T13:22:11.938Z"}
+
+data: {"data":"ValueError: Invalid file descriptor: -1","timestamp":"2026-11-10T13:22:11.938Z"}
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+
+: keep-alive
+

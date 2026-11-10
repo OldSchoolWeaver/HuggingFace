@@ -11,8 +11,22 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-import gradio as gr
-from dotenv import find_dotenv, load_dotenv
+
+def _hide_closed_loop_noise(unraisable) -> None:
+    """On Spaces, importing crewAI leaves a few already-closed asyncio loops behind; when Python garbage-collects
+    them it prints 'Exception ignored in BaseEventLoop.__del__ ... Invalid file descriptor: -1'. It's harmless
+    (the app keeps working), so hide exactly that message and report everything else as usual."""
+    if (getattr(unraisable.object, "__qualname__", "") == "BaseEventLoop.__del__"
+            and isinstance(unraisable.exc_value, ValueError)
+            and "Invalid file descriptor: -1" in str(unraisable.exc_value)):
+        return
+    sys.__unraisablehook__(unraisable)
+
+
+sys.unraisablehook = _hide_closed_loop_noise
+
+import gradio as gr  # noqa: E402
+from dotenv import find_dotenv, load_dotenv  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "financial_researcher" / "src"))  # the crewAI project, unchanged
