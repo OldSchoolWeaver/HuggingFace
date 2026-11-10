@@ -7,6 +7,7 @@ The Space config (YAML front matter) lives in each unit's `README.md`, not here.
 |------|--------|-------|
 | 1 | `unit1/agent_shopping_list` | [MiguelBayanSoares/shopping_list](https://huggingface.co/spaces/MiguelBayanSoares/shopping_list) |
 | 2 | `unit2/research_agent` | [MiguelBayanSoares/Research_Agent](https://huggingface.co/spaces/MiguelBayanSoares/Research_Agent) |
+| 3 | `unit3` | [MiguelBayanSoares/Financial_Researcher](https://huggingface.co/spaces/MiguelBayanSoares/Financial_Researcher) |
 
 ## Deploying
 
@@ -16,6 +17,7 @@ The Space config (YAML front matter) lives in each unit's `README.md`, not here.
   ```bash
   ./deploy_space.sh unit1        # unit 1 -> MiguelBayanSoares/shopping_list
   ./deploy_space.sh unit2        # unit 2 -> MiguelBayanSoares/Research_Agent
+  ./deploy_space.sh unit3        # unit 3 -> MiguelBayanSoares/Financial_Researcher
   ./deploy_space.sh github       # repo   -> GitHub
   ./deploy_space.sh all unit2    # GitHub, then the unit 2 Space
   ```

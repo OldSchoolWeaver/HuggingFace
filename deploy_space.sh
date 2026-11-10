@@ -5,7 +5,7 @@
 #   ./deploy_space.sh [hf] <unit>                      # unit folder -> its HF Space (default target)
 #   ./deploy_space.sh github                           # whole repo  -> GitHub
 #   ./deploy_space.sh all <unit>                       # both: GitHub first, then the Space
-#   <unit> is a short name from unit_target() below (unit1, unit2), or "<folder> <hf_user/space>" for anything else.
+#   <unit> is a short name from unit_target() below (unit1, unit2, unit3), or "<folder> <hf_user/space>" for anything else.
 #
 # Examples:
 #   ./deploy_space.sh unit2                            # research agents -> MiguelBayanSoares/Research_Agent
@@ -26,9 +26,10 @@ unit_target() {
   case "$1" in
     unit1) echo "unit1/agent_shopping_list MiguelBayanSoares/shopping_list" ;;
     unit2) echo "unit2/research_agent MiguelBayanSoares/Research_Agent" ;;
+    unit3) echo "unit3 MiguelBayanSoares/Financial_Researcher" ;;
   esac
 }
-KNOWN_UNITS="unit1 unit2"
+KNOWN_UNITS="unit1 unit2 unit3"
 
 usage() { sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 

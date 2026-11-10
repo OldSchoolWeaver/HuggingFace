@@ -1,0 +1,46 @@
+# src/financial_researcher/config/tasks.yaml
+research_task:
+  description: >
+    Conduct thorough research on company {company}. Focus on:
+    1. Current company status and health
+    2. Historical company performance
+    3. Major challenges and opportunities
+    4. Recent news and events
+    5. Future outlook and potential developments
+    6. Is the company a good investment?
+
+    Make sure to organize your findings in a structured format with clear sections.
+
+    Sources are mandatory: every fact, figure and news item must come from a page you
+    found with your search tool and must cite it inline as [1], [2], ... Prefer primary
+    and reputable sources (company filings and investor relations, regulators, Reuters,
+    Bloomberg, Financial Times, WSJ). Include the publication date of each news item.
+    Never state a figure you did not find in a source; write "not found" instead.
+  expected_output: >
+    A comprehensive research document with well-organized sections covering
+    all the requested aspects of {company}. Include specific facts, figures,
+    and examples where relevant, each with an inline citation [n]. End with a
+    "Sources" section listing every citation as: [n] Title - Publisher - Date - URL.
+  agent: researcher
+
+analysis_task:
+  description: >
+    Analyze the research findings and create a comprehensive report on {company}.
+    Your report should:
+    1. Begin with an executive summary
+    2. Include all key information from the research
+    3. Provide insightful analysis of trends and patterns
+    4. Offer a market outlook for company, noting that this should not be used for trading decisions
+    5. Be formatted in a professional, easy-to-read style with clear headings
+    6. Keep the researcher's inline citations [n] on every fact and figure you use, and
+       do not add facts or figures that are not in the research; label your own analysis
+       and opinions clearly as analysis
+  expected_output: >
+    A polished, professional report on {company} that presents the research
+    findings with added analysis and insights. The report should be well-structured
+    with an executive summary, main sections, and conclusion, with inline citations [n]
+    and a final "Sources" section listing every cited source with its URL.
+  agent: analyst
+  context:
+    - research_task
+  output_file: output/report.md
