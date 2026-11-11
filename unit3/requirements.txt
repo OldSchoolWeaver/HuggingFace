@@ -1,3 +1,4 @@
 crewai[tools]==1.14.4
 gradio==6.31.0  # same as sdk_version in README.md; Gradio 5.x pins mcp/aiofiles versions that conflict with crewai
 python-dotenv
+yfinance>=0.2.66  # stock_picker: Get stock metrics tool

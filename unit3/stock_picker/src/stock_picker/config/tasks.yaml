@@ -1,0 +1,34 @@
+find_trending_companies:
+  description: >
+    Find 5-6 trending companies in the news in {sector} by searching the latest news. Find new companies that you've not found before.
+    Only include publicly traded companies: confirm all the tickers with one call to the 'Get stock metrics' tool
+    (comma-separated) and replace any company it reports as NOT_LISTED.
+  expected_output: >
+    A list of 5-6 publicly traded trending companies in {sector}, each with its confirmed stock ticker
+  agent: trending_company_finder
+  output_file: output/trending_companies.json
+
+research_trending_companies:
+  description: >
+    Given a list of trending companies, provide detailed analysis of each company in a report by searching online.
+    Get every financial metric from ONE call to the 'Get stock metrics' tool with all the tickers (comma-separated);
+    write "unknown" for any value the tool does not return. Never estimate metrics.
+  expected_output: >
+    A report containing detailed analysis of each company, with its ticker and the metrics from the tool
+  agent: financial_researcher
+  context:
+    - find_trending_companies
+  output_file: output/research_report.json
+
+pick_best_companies:
+  description: >
+    Analyze the research findings for the 5-6 candidate companies and pick the three best for investment.
+    Only pick publicly traded companies with a valid ticker; base the choice on the metrics in the research.
+    Provide a detailed report. Don't pick the same company twice.
+  expected_output: >
+    The three chosen companies (with tickers) and why they were chosen, citing their metrics; the companies that were
+    not selected and why they were not selected.
+  agent: stock_picker
+  context:
+    - research_trending_companies
+  output_file: output/decision.md
