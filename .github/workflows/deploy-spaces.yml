@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           # Add one entry per unit you want to deploy
-          - path: unit1/agent_shopping_list
+          - path: shopping_agent
             space: MiguelBayanSoares/shopping_list
-          - path: unit2/research_agent
+          - path: research_agent
             space: MiguelBayanSoares/Research_Agent
-          - path: unit3
+          - path: financial_researcher_agent
             space: MiguelBayanSoares/Financial_Researcher
     steps:
       - uses: actions/checkout@v4

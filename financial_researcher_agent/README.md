@@ -96,7 +96,7 @@ Optional **variables** for the Stock Picker:
 ## Run locally
 
 ```bash
-cd unit3
+cd financial_researcher_agent
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
@@ -104,7 +104,7 @@ python app.py
 
 ## Deploy
 
-From the repo root: `./deploy_space.sh unit3` (→ `MiguelBayanSoares/Financial_Researcher`).
+From the repo root: `./deploy_space.sh financial_researcher_agent` (→ `MiguelBayanSoares/Financial_Researcher`).
 
 Each run is saved in `output/runs/<date>-<research|picks>-<name>/`. The Space clears this folder when it restarts.
 Each tab runs one request at a time; other users wait in the queue.

@@ -117,7 +117,7 @@ python -m evals.run_evals   # evals (calls the model)
 ## Deploy
 
 ```bash
-./deploy_space.sh all unit2      # -> MiguelBayanSoares/Research_Agent
+./deploy_space.sh all research_agent      # -> MiguelBayanSoares/Research_Agent
 ```
 
 Runs are saved in `runs/`, which the Space clears on restart: download reports you want to keep.

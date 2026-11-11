@@ -105,12 +105,12 @@ python app.py
 
 ## Deploying
 
-This folder lives inside a multi-unit GitHub repo, but a Space needs `app.py` and this README at its root.
+This folder lives inside a multi-app GitHub repo, but a Space needs `app.py` and this README at its root.
 The repo's `deploy_space.sh` (or the GitHub Action in `.github/workflows/deploy-spaces.yml`) uses
 `git subtree split` to push **only this folder** as the Space's root:
 
 ```bash
-./deploy_space.sh unit1/agent_shopping_list MiguelBayanSoares/shopping_list
+./deploy_space.sh shopping_agent
 ```
 
 ## Limitations
