@@ -142,5 +142,5 @@ class StockPicker():
             verbose=True,
             manager_agent=manager,
             memory=self.memory,
-            tracing=True,
+            tracing=os.getenv("STOCK_PICKER_TRACING", "true").lower() == "true",  # app.py turns it off for the web app
         )
