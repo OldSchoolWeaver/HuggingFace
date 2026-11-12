@@ -1,7 +1,7 @@
 # 🤗 Hugging Face Agents Course
 
-Agent apps built while following the Hugging Face Agents Course. Each app lives in its own folder and is
-deployed as its own Hugging Face Space.
+Agent apps built while following the Hugging Face Agents Course. Each app lives in its own folder; the web apps
+are each deployed as their own Hugging Face Space.
 
 ## Apps
 
@@ -10,11 +10,37 @@ deployed as its own Hugging Face Space.
 | 🛒 **Weekly Meal Planner** - plans a week of meals with recipes and one shopping list grouped by aisle | [`shopping_agent/`](shopping_agent/) | smolagents | [MiguelBayanSoares/shopping_list](https://huggingface.co/spaces/MiguelBayanSoares/shopping_list) |
 | 🔬 **Research Agents** - five agents research a question using only trusted (golden) sources and write a cited report, with a full trace log and evals | [`research_agent/`](research_agent/) | aisuite | [MiguelBayanSoares/Research_Agent](https://huggingface.co/spaces/MiguelBayanSoares/Research_Agent) |
 | 📈 **Financial Agents** - a **Financial Researcher** crew (cited company report) and a **Stock Picker** crew (trending listed companies, real market metrics, three picks) | [`financial_researcher_agent/`](financial_researcher_agent/) | crewAI | [MiguelBayanSoares/Financial_Researcher](https://huggingface.co/spaces/MiguelBayanSoares/Financial_Researcher) |
+| 🛠️ **Engineering Team** - a lead, a backend, a frontend and a test engineer design, build and test a small Python app with a Gradio UI in a Docker sandbox | [`engineering_team_agent/`](engineering_team_agent/) | crewAI | — (runs locally) |
 
 Each app's `README.md` explains how it works and what every file does. The YAML block at the top of that README
 is also the Space's configuration.
 
 > The financial apps are AI-generated research for learning purposes only: not financial advice.
+
+## Frameworks and tools
+
+| | 🛒 Meal Planner | 🔬 Research Agents | 📈 Financial Agents | 🛠️ Engineering Team |
+|---|---|---|---|---|
+| **Agent framework** | [smolagents](https://github.com/huggingface/smolagents) 1.26 (`CodeAgent`) | [aisuite](https://github.com/andrewyng/aisuite) 0.2 (`Agent`, `Runner`) | [crewAI](https://crewai.com) 1.14.4 (two crews, sequential) | [crewAI](https://crewai.com) 1.14.2 (one crew, sequential) |
+| **Agents** | 1 | 5: planner, executor, researcher, reviewer, writer | 2 + 3: researcher, analyst / news analyst, researcher, picker | 4: lead, backend, frontend, test engineer |
+| **LLM** | `Qwen/Qwen3-Coder-480B-A35B-Instruct` via Hugging Face Inference Providers (`MODEL_ID`) | same model via aisuite's Hugging Face provider (`MODEL_ID`, or one per agent) | OpenAI `gpt-4o-mini`; memory embeddings `text-embedding-3-small` | OpenAI `gpt-5.4` (lead, frontend), Anthropic `claude-sonnet-5` (backend), OpenAI `gpt-4o-mini` (tests) |
+| **Tools** | DuckDuckGo search, webpage reader, meal plan tool | DuckDuckGo search (`ddgs`), webpage reader, golden-source checks | Serper web search; Yahoo Finance metrics (`yfinance`) | sandbox file read/write/run; [Context7](https://context7.com) MCP for library docs |
+| **UI** | Gradio 5.23 (smolagents `GradioUI`) | Gradio 5.23 | Gradio 6.31 (two tabs, live log) | none: `crewai run` in the terminal |
+| **Runs on** | Hugging Face Space | Hugging Face Space | Hugging Face Space | your machine; generated code runs in Docker (`uv`, Python 3.13) |
+| **Also** | | trace log of every agent and tool call; evals against trusted sources | Pydantic structured outputs; crew memory; step and time limits | optional [LiteLLM](https://docs.litellm.ai) gateway (see below) |
+
+### LiteLLM gateway (optional)
+
+`docker-compose.quickstart.yml` starts a [LiteLLM](https://docs.litellm.ai) proxy with a Postgres database on
+<http://localhost:4000>. It holds the real OpenAI/Anthropic keys and logs every request with its tokens and cost
+per key. The crewAI apps can use it without code changes: set `OPENAI_BASE_URL` / `ANTHROPIC_BASE_URL` to the
+gateway and the API keys to a LiteLLM key for that run. The full steps are in
+[`engineering_team_agent/README.md`](engineering_team_agent/README.md#using-litellm-optional). It only runs locally,
+so the Spaces can't use it.
+
+```bash
+docker compose -f docker-compose.quickstart.yml up -d   # needs LITELLM_MASTER_KEY and LITELLM_SALT_KEY in .env
+```
 
 ## Repository layout
 
@@ -26,6 +52,8 @@ is also the Space's configuration.
 │   ├── app.py                    #    one Gradio app with two tabs
 │   ├── financial_researcher/     #    crewAI project (runs on its own with `crewai run`)
 │   └── stock_picker/             #    crewAI project (runs on its own with `crewai run`)
+├── engineering_team_agent/       # 🛠️ crewAI project, runs locally (`crewai run`)
+├── docker-compose.quickstart.yml # optional LiteLLM gateway + Postgres
 ├── course/                       # course material that isn't part of any app
 ├── deploy_space.sh               # deploy an app to its Space and/or the repo to GitHub
 ├── .github/workflows/
@@ -73,6 +101,9 @@ pip install -r requirements.txt
 python app.py                       # opens on http://127.0.0.1:7860
 ```
 
+The Engineering Team is a crewAI project instead: `cd engineering_team_agent && crewai install && crewai run`
+(needs Docker running). See its README.
+
 The Research Agents and Financial Agents apps read API keys from the `.env` file at the repo root. The Meal
 Planner doesn't load `.env`, so export its keys first: `export $(grep -v '^#' ../.env | xargs)`.
 
@@ -80,7 +111,9 @@ Planner doesn't load `.env`, so export its keys first: `export $(grep -v '^#' ..
 |-----|---------|
 | `HF_TOKEN` | Meal Planner, Research Agents (Hugging Face Inference Providers) |
 | `MODEL_ID` | Optional: overrides the default model of the Meal Planner and the Research Agents |
-| `OPENAI_API_KEY` | Financial Agents (`gpt-4o-mini`, memory embeddings) |
+| `OPENAI_API_KEY` | Financial Agents (`gpt-4o-mini`, memory embeddings), Engineering Team (lead, frontend and test engineers) |
 | `SERPER_API_KEY` | Financial Agents (web search) |
+| `ANTHROPIC_API_KEY` | Engineering Team (backend engineer) |
+| `LITELLM_MASTER_KEY`, `LITELLM_SALT_KEY` | LiteLLM gateway (`docker-compose.quickstart.yml`). Never regenerate the salt key. |
 
 On a Space, add the same keys as **secrets** instead; `.env` is never pushed.
