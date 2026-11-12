@@ -48,7 +48,7 @@ Because the agent keeps its memory between messages, a follow-up edits the exist
 | File | Purpose |
 |------|---------|
 | `README.md` | The YAML block at the top (between the two `---` lines) is the **Space configuration**: which SDK (`gradio`), which version, and which file to run (`app_file: app.py`). The rest is this documentation, shown on the Space page. |
-| `pyproject.toml`, `uv.lock`, `.python-version` | The app as a [uv](https://docs.astral.sh/uv/) project: its direct dependencies, the exact version of every package, and the local Python (3.12). Change dependencies with `uv add` / `uv remove`. |
+| `pyproject.toml`, `uv.lock`, `.python-version` | The app as a [uv](https://docs.astral.sh/uv/) project: its direct dependencies, the exact version of every package, and the local Python (3.13; the Space uses `python_version` above, or 3.10 by default). Change dependencies with `uv add` / `uv remove`. |
 | `requirements.txt` | Packages the Space installs, generated from `uv.lock` (`./deploy_space.sh reqs shopping_agent`); don't edit by hand. `smolagents[toolkit]` and `gradio` are pinned to exact versions so an upgrade can't silently break the app; `ddgs` powers web search; `markdownify` + `requests` power page reading. |
 | `app.py` | **Entry point** the Space runs. Creates the model, defines the meal-planner instructions, builds the `CodeAgent` with its tools and launches the UI. |
 | `Gradio_UI.py` | The **chat page**: a thin wrapper around smolagents' built-in Gradio UI that adds a title, description and example prompts. |

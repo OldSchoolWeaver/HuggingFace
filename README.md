@@ -86,7 +86,7 @@ Authentication: the script uses `$HF_TOKEN` / `$GITHUB_TOKEN` when set, otherwis
 
 1. Create the folder at the repo root with an `app.py` and a `README.md` that starts with the Space configuration
    block (`sdk`, `sdk_version`, `app_file`, …). Make it a uv project and generate its `requirements.txt`:
-   `uv init --bare --no-workspace --python 3.12`, `uv add "gradio[oauth,mcp]==<sdk_version>" …`, then
+   `uv init --bare --no-workspace --python 3.13`, `uv add "gradio[oauth,mcp]==<sdk_version>" …`, then
    `./deploy_space.sh reqs <folder>`. Always pass `--no-workspace`, or uv joins the folder to a parent project and
    the apps end up sharing one environment.
 2. Create the Space on huggingface.co and add the secrets it needs (Settings → Variables and secrets).
@@ -105,11 +105,13 @@ uv run python app.py                # creates the folder's .venv from uv.lock on
 
 - `uv run` keeps `.venv` in sync with `uv.lock` before every run, so there's no venv to activate or forget.
 - Each folder's `pyproject.toml` lists the direct dependencies, `uv.lock` pins every package, and `.python-version`
-  sets Python 3.12. Change dependencies with `uv add` / `uv remove` in the folder.
+  sets the local Python (3.13; each Space uses the version in its README). Change dependencies with `uv add` / `uv remove` in the folder.
 - Spaces install `requirements.txt`, not `uv.lock`. After changing dependencies, regenerate it with
   `./deploy_space.sh reqs <folder>` and commit; `deploy_space.sh` refuses to deploy if they don't match.
 - `sidekick_agent/` (work in progress, a notebook so far): run `uv sync` in it, then open `lab.ipynb` in VS Code or
   Cursor and pick `sidekick_agent/.venv` as the kernel.
+- `./sync_envs.sh` deletes and rebuilds every app's `.venv` from its `uv.lock` (or only the folders you name; `--dry-run` to
+  preview). Use it after changing Python or when an environment is broken.
 - `.venv/` is git-ignored everywhere. Without uv, `pip install -r requirements.txt` in a venv still works.
 
 The Engineering Team is a crewAI project instead: `cd engineering_team_agent && crewai install && crewai run`
