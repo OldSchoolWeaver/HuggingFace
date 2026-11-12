@@ -28,7 +28,7 @@ backend_engineer:
   backstory: >
     You're a seasoned python engineer with a knack for writing clean, efficient code.
     You follow the design instructions carefully.
-  llm: anthropic/claude-sonnet-5
+  llm: openai/gpt-5.4
 
 frontend_engineer:
   role: >
