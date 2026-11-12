@@ -1,5 +1,90 @@
-smolagents[toolkit]==1.26.0
-markdownify
-requests
-ddgs
-pandas
+# Generated from uv.lock by ./deploy_space.sh reqs shopping_agent - don't edit by hand.
+# Change dependencies with uv add / uv remove in this folder, then run that command again and commit.
+# The Space installs this file: Hugging Face doesn't read pyproject.toml or uv.lock.
+aiofiles==23.2.1
+annotated-doc==0.0.6
+annotated-types==0.8.0
+anyio==4.16.0
+audioop-lts==0.2.2 ; python_full_version >= '3.13'
+authlib==1.9.5
+beautifulsoup4==4.15.0
+certifi==2026.10.23
+cffi==2.1.1 ; platform_python_implementation != 'PyPy'
+charset-normalizer==3.5.2
+click==8.5.1
+colorama==0.4.6 ; sys_platform == 'win32'
+cryptography==50.0.2
+ddgs==9.16.1
+exceptiongroup==1.3.1 ; python_full_version < '3.11'
+fastapi==0.162.5
+ffmpy==1.0.0
+filelock==4.1.0 ; python_full_version < '3.11'
+filelock==4.2.10 ; python_full_version >= '3.11'
+fsspec==2026.9.0
+gradio==5.23.1
+gradio-client==1.8.0
+groovy==0.1.2
+h11==0.16.0
+hf-xet==1.8.0 ; platform_machine == 'AMD64' or platform_machine == 'ARM64' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'
+httpcore==1.0.9
+httpcore2==2.14.0 ; python_full_version < '3.11' and sys_platform != 'emscripten'
+httpcore2==2.16.0 ; python_full_version >= '3.11' and sys_platform != 'emscripten'
+httpx==0.28.1
+httpx2==2.14.0 ; python_full_version < '3.11'
+httpx2==2.16.0 ; python_full_version >= '3.11'
+httpx2-jsfetch==1.0 ; python_full_version >= '3.12' and sys_platform == 'emscripten'
+huggingface-hub==2.4.0
+idna==3.20
+itsdangerous==2.2.0
+jinja2==3.1.6
+joserfc==1.7.7 ; python_full_version < '3.11'
+joserfc==1.8.0 ; python_full_version >= '3.11'
+lxml==6.1.3
+markdown-it-py==4.3.0
+markdownify==1.2.3
+markupsafe==3.0.4
+mdurl==0.1.2
+numpy==2.2.6 ; python_full_version < '3.11'
+numpy==2.4.6 ; python_full_version == '3.11.*'
+numpy==2.5.4 ; python_full_version >= '3.12'
+opentelemetry-api==1.45.2
+orjson==3.13.0
+packaging==26.3
+pandas==2.3.3
+pillow==11.3.0
+primp==2.0.1
+pycparser==3.11 ; python_full_version < '3.11' and implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
+pycparser==3.12 ; python_full_version >= '3.11' and implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
+pydantic==2.14.3
+pydantic-core==2.50.4
+pydub==0.25.1
+pygments==2.21.0
+python-dateutil==3.0.0 ; python_full_version < '3.11'
+python-dateutil==4.0.0 ; python_full_version >= '3.11'
+python-dotenv==1.2.4
+python-multipart==0.0.32 ; python_full_version < '3.11'
+python-multipart==0.0.33 ; python_full_version >= '3.11'
+pytz==2026.6
+pyyaml==6.0.3
+requests==2.34.2
+rich==15.0.0
+ruff==0.17.4 ; sys_platform != 'emscripten'
+safehttpx==0.1.7
+semantic-version==2.10.0
+shellingham==1.5.4 ; sys_platform != 'emscripten'
+six==1.17.0
+smolagents==1.26.0
+soupsieve==2.10 ; python_full_version < '3.11.5'
+soupsieve==4.1 ; python_full_version >= '3.11.5'
+starlette==0.52.1
+tomli==2.5.0 ; python_full_version < '3.11'
+tomlkit==0.13.3
+tqdm==4.70.1
+truststore==0.10.5 ; sys_platform != 'emscripten'
+typer==0.29.1 ; sys_platform != 'emscripten'
+typing-extensions==4.16.0
+typing-inspection==0.4.5
+tzdata==2026.6
+urllib3==2.8.0
+uvicorn==0.54.0 ; sys_platform != 'emscripten'
+websockets==15.0.1

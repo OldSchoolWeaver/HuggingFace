@@ -71,7 +71,8 @@ runs aren't uploaded and runs don't wait for a terminal prompt.
 |------|---------|
 | `README.md` | Space configuration (YAML block at the top) and this documentation. |
 | `app.py` | Gradio app and Space entry point: the two tabs, the live log and saving the results. |
-| `requirements.txt` | Packages the Space installs: `crewai[tools]`, `gradio`, `python-dotenv`, `yfinance`. |
+| `pyproject.toml`, `uv.lock`, `.python-version` | The app as a [uv](https://docs.astral.sh/uv/) project: its direct dependencies, the exact version of every package, and the local Python (3.12). Change dependencies with `uv add` / `uv remove`. |
+| `requirements.txt` | Packages the Space installs, generated from `uv.lock` (`./deploy_space.sh reqs financial_researcher_agent`); don't edit by hand. Direct dependencies: `crewai[tools]`, `gradio[oauth,mcp]`, `python-dotenv`, `yfinance`. |
 | `financial_researcher/` | The Financial Researcher crewAI project. Runs on its own with `crewai run`. |
 | `stock_picker/` | The Stock Picker crewAI project, including the Get stock metrics tool. Runs on its own with `crewai run`. |
 
@@ -97,10 +98,10 @@ Optional **variables** for the Stock Picker:
 
 ```bash
 cd financial_researcher_agent
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+uv run python app.py   # creates .venv from uv.lock on the first run
 ```
+
+`financial_researcher/` and `stock_picker/` keep their own uv projects for `crewai run`; they are separate from this one.
 
 ## Deploy
 

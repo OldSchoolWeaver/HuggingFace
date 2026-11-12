@@ -48,7 +48,8 @@ Because the agent keeps its memory between messages, a follow-up edits the exist
 | File | Purpose |
 |------|---------|
 | `README.md` | The YAML block at the top (between the two `---` lines) is the **Space configuration**: which SDK (`gradio`), which version, and which file to run (`app_file: app.py`). The rest is this documentation, shown on the Space page. |
-| `requirements.txt` | Packages the Space installs before starting. `smolagents[toolkit]` is pinned to an exact version so an upgrade can't silently break the app; `ddgs` powers web search; `markdownify` + `requests` power page reading. |
+| `pyproject.toml`, `uv.lock`, `.python-version` | The app as a [uv](https://docs.astral.sh/uv/) project: its direct dependencies, the exact version of every package, and the local Python (3.12). Change dependencies with `uv add` / `uv remove`. |
+| `requirements.txt` | Packages the Space installs, generated from `uv.lock` (`./deploy_space.sh reqs shopping_agent`); don't edit by hand. `smolagents[toolkit]` and `gradio` are pinned to exact versions so an upgrade can't silently break the app; `ddgs` powers web search; `markdownify` + `requests` power page reading. |
 | `app.py` | **Entry point** the Space runs. Creates the model, defines the meal-planner instructions, builds the `CodeAgent` with its tools and launches the UI. |
 | `Gradio_UI.py` | The **chat page**: a thin wrapper around smolagents' built-in Gradio UI that adds a title, description and example prompts. |
 | `tools/meal_plan.py` | The **heart of the app**: the in-memory weekly plan plus the five tools the agent uses to build it, and the parsing/conversion helpers. |
@@ -98,10 +99,11 @@ Set these in the Space under **Settings → Variables and secrets**. The code re
 ## Running locally
 
 ```bash
-pip install -r requirements.txt
 export HF_TOKEN=hf_xxx
-python app.py
+uv run python app.py   # creates .venv from uv.lock on the first run
 ```
+
+Without uv: `python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && python app.py`.
 
 ## Deploying
 

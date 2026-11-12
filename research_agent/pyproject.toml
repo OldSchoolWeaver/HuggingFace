@@ -1,0 +1,20 @@
+[project]
+name = "research-agent"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "aisuite[huggingface]==0.2.0",
+    "ddgs>=9.16.1",
+    "gradio[oauth]==5.23.1",
+    "huggingface-hub>=2.4.0",
+    "markdownify>=1.2.3",
+    "nest-asyncio>=1.6.0",
+    "python-dotenv>=1.2.4",
+    "pyyaml>=6.0.3",
+    "requests>=2.34.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]

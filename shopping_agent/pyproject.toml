@@ -1,0 +1,12 @@
+[project]
+name = "shopping-agent"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "ddgs>=9.16.1",
+    "gradio[oauth]==5.23.1",
+    "markdownify>=1.2.3",
+    "pandas>=2.3.3",
+    "requests>=2.34.2",
+    "smolagents[toolkit]==1.26.0",
+]

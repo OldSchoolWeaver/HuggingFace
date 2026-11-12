@@ -1,1 +1,6 @@
 .env
+
+# virtual environments (each app has its own; never commit them)
+.venv/
+__pycache__/
+.DS_Store

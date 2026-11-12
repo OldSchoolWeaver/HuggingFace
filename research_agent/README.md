@@ -107,12 +107,13 @@ checks: 100% of sources golden, 100% actually retrieved, the expected reference 
 ## Run locally
 
 ```bash
-pip install -r requirements.txt -r requirements-dev.txt
-pytest -q                   # offline tests
+uv run pytest -q                   # offline tests (creates .venv from uv.lock on the first run)
 export HF_TOKEN=hf_xxx
-python app.py               # the app
-python -m evals.run_evals   # evals (calls the model)
+uv run python app.py               # the app
+uv run python -m evals.run_evals   # evals (calls the model)
 ```
+
+Dependencies live in `pyproject.toml` / `uv.lock` (pytest in the `dev` group); change them with `uv add` / `uv remove`, then run `./deploy_space.sh reqs research_agent` from the repo root to regenerate `requirements.txt`, which the Space installs. Without uv: `pip install -r requirements.txt -r requirements-dev.txt`.
 
 ## Deploy
 

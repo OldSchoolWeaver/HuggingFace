@@ -37,6 +37,9 @@ def reset_sandbox() -> None:
     # crew's workspace* (adds [tool.uv.workspace] to ../pyproject.toml) and the two share the crew's .venv: adding
     # gradio then re-syncs that .venv for the sandbox and deletes crewAI/openai/httpcore while the crew is running.
     subprocess.run(["uv", "init", "--bare", "--no-workspace", "--python", "3.13"], cwd=SANDBOX_DIR, check=True)
+    # --bare writes no .python-version, so `uv add` would build .venv with the newest Python on this machine; pin it to
+    # 3.13, the version of the Docker image the code runs in (ghcr.io/astral-sh/uv:python3.13-bookworm-slim).
+    subprocess.run(["uv", "python", "pin", "3.13"], cwd=SANDBOX_DIR, check=True)
     subprocess.run(["uv", "add", "--no-workspace", "gradio"], cwd=SANDBOX_DIR, check=True)
 
 @tool("List Sandbox Files")

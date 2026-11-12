@@ -84,22 +84,33 @@ Authentication: the script uses `$HF_TOKEN` / `$GITHUB_TOKEN` when set, otherwis
 
 ### Adding a new app
 
-1. Create the folder at the repo root with an `app.py`, a `requirements.txt` and a `README.md` that starts with
-   the Space configuration block (`sdk`, `sdk_version`, `app_file`, …).
+1. Create the folder at the repo root with an `app.py` and a `README.md` that starts with the Space configuration
+   block (`sdk`, `sdk_version`, `app_file`, …). Make it a uv project and generate its `requirements.txt`:
+   `uv init --bare --no-workspace --python 3.12`, `uv add "gradio[oauth,mcp]==<sdk_version>" …`, then
+   `./deploy_space.sh reqs <folder>`. Always pass `--no-workspace`, or uv joins the folder to a parent project and
+   the apps end up sharing one environment.
 2. Create the Space on huggingface.co and add the secrets it needs (Settings → Variables and secrets).
 3. Add a line to `app_target()` and `KNOWN_APPS` in `deploy_space.sh`, and a matrix entry in
    `.github/workflows/deploy-spaces.yml`.
 
 ## Running an app locally
 
-Each app has its own dependencies, so give each one its own virtual environment:
+Every app is a [uv](https://docs.astral.sh/uv/) project with its own environment, because their dependencies
+conflict (Gradio 5.23 vs 6.31, different crewAI versions). Install uv once (`brew install uv`), then:
 
 ```bash
 cd research_agent                   # or shopping_agent / financial_researcher_agent
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python app.py                       # opens on http://127.0.0.1:7860
+uv run python app.py                # creates the folder's .venv from uv.lock on the first run; http://127.0.0.1:7860
 ```
+
+- `uv run` keeps `.venv` in sync with `uv.lock` before every run, so there's no venv to activate or forget.
+- Each folder's `pyproject.toml` lists the direct dependencies, `uv.lock` pins every package, and `.python-version`
+  sets Python 3.12. Change dependencies with `uv add` / `uv remove` in the folder.
+- Spaces install `requirements.txt`, not `uv.lock`. After changing dependencies, regenerate it with
+  `./deploy_space.sh reqs <folder>` and commit; `deploy_space.sh` refuses to deploy if they don't match.
+- `sidekick_agent/` (work in progress, a notebook so far): run `uv sync` in it, then open `lab.ipynb` in VS Code or
+  Cursor and pick `sidekick_agent/.venv` as the kernel.
+- `.venv/` is git-ignored everywhere. Without uv, `pip install -r requirements.txt` in a venv still works.
 
 The Engineering Team is a crewAI project instead: `cd engineering_team_agent && crewai install && crewai run`
 (needs Docker running). See its README.
