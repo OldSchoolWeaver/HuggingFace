@@ -14,7 +14,7 @@ engineering_lead:
   backstory: >
     You're a seasoned engineering lead with a knack for writing clear and concise designs.
   llm: openai/gpt-5.4
-
+  
 
 
 backend_engineer:
