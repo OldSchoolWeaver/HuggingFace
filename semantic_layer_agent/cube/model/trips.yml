@@ -1,0 +1,49 @@
+cubes:
+  - name: trips
+    sql_table: fleet.trips
+    description: One row per trip, with distance driven and battery energy used.
+
+    joins:
+      - name: vehicles
+        sql: "{CUBE}.vehicle_id = {vehicles.vehicle_id}"
+        relationship: many_to_one
+      - name: drivers
+        sql: "{CUBE}.driver_id = {drivers.driver_id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: trip_id
+        sql: trip_id
+        type: number
+        primary_key: true
+      - name: started_at
+        sql: started_at
+        type: time
+        description: When the trip started (local time).
+      - name: purpose
+        sql: purpose
+        type: string
+        description: client_visit, delivery, depot_transfer or training.
+
+    measures:
+      - name: count
+        type: count
+        description: Number of trips.
+      - name: total_distance_km
+        sql: distance_km
+        type: sum
+        description: Total distance driven in km.
+      - name: total_energy_kwh
+        sql: energy_used_kwh
+        type: sum
+        description: Total battery energy consumed while driving, in kWh.
+      - name: avg_trip_km
+        sql: distance_km
+        type: avg
+        description: Average trip length in km.
+      - name: energy_per_100km
+        sql: "100.0 * {total_energy_kwh} / NULLIF({total_distance_km}, 0)"
+        type: number
+        description: >
+          Energy efficiency in kWh per 100 km (lower is better): total energy divided by total distance,
+          not an average of per-trip values.

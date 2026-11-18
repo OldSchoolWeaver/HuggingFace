@@ -1,0 +1,63 @@
+cubes:
+  - name: vehicles
+    sql_table: fleet.vehicles
+    description: One row per electric vehicle in the fleet, with its specs and home depot.
+
+    joins:
+      - name: depots
+        sql: "{CUBE}.depot_id = {depots.depot_id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: vehicle_id
+        sql: vehicle_id
+        type: number
+        primary_key: true
+        public: true
+      - name: make
+        sql: make
+        type: string
+      - name: model
+        sql: model
+        type: string
+      - name: make_model
+        sql: "{CUBE}.make || ' ' || {CUBE}.model"
+        type: string
+        description: Make and model together, e.g. "Tesla Model Y Long Range".
+      - name: model_year
+        sql: model_year
+        type: number
+      - name: status
+        sql: status
+        type: string
+        description: active, in_maintenance or retired.
+      - name: battery_kwh
+        sql: battery_kwh
+        type: number
+        description: Usable battery capacity in kWh.
+      - name: wltp_range_km
+        sql: wltp_range_km
+        type: number
+        description: Official WLTP range in km.
+      - name: acquired_on
+        sql: acquired_on
+        type: time
+
+    measures:
+      - name: count
+        type: count
+        description: Number of vehicles (any status).
+      - name: active_count
+        type: count
+        description: Vehicles currently in service (status = active). The official "fleet size".
+        filters:
+          - sql: "{CUBE}.status = 'active'"
+      - name: total_purchase_value_eur
+        sql: purchase_price_eur
+        type: sum
+        format: currency
+        description: Sum of purchase prices in EUR.
+      - name: avg_battery_kwh
+        sql: battery_kwh
+        type: avg
+        description: Average usable battery capacity in kWh.

@@ -12,3 +12,7 @@ __pycache__/
 .playwright-mcp/
 # agent working folders (sidekick_agent/sandbox, engineering_team_agent/sandbox)
 sandbox/
+
+# semantic_layer_agent: Cube Store data and local eval results
+semantic_layer_agent/cube/.cubestore/
+semantic_layer_agent/evals/results/

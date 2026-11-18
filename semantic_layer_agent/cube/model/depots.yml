@@ -1,0 +1,27 @@
+cubes:
+  - name: depots
+    sql_table: fleet.depots
+    description: Fleet depots where vehicles are based and charged overnight.
+
+    dimensions:
+      - name: depot_id
+        sql: depot_id
+        type: number
+        primary_key: true
+        public: true
+      - name: name
+        sql: name
+        type: string
+        description: Depot name.
+      - name: city
+        sql: city
+        type: string
+      - name: region
+        sql: region
+        type: string
+        description: Sales region the depot serves (Lisboa, Norte, Centro, Algarve).
+
+    measures:
+      - name: count
+        type: count
+        description: Number of depots.

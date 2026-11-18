@@ -1,0 +1,32 @@
+cubes:
+  - name: drivers
+    sql_table: fleet.drivers
+    description: >
+      Sales staff who drive fleet vehicles. Personal data (email) is deliberately not exposed
+      in the semantic layer; names are available for per-driver reporting.
+
+    joins:
+      - name: depots
+        sql: "{CUBE}.depot_id = {depots.depot_id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: driver_id
+        sql: driver_id
+        type: number
+        primary_key: true
+        public: true
+      - name: full_name
+        sql: full_name
+        type: string
+      - name: sales_region
+        sql: sales_region
+        type: string
+      - name: hired_on
+        sql: hired_on
+        type: time
+
+    measures:
+      - name: count
+        type: count
+        description: Number of drivers.

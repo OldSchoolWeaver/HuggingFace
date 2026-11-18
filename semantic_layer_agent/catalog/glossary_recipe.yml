@@ -1,0 +1,11 @@
+# Loads the business glossary into DataHub:  uv run datahub ingest -c catalog/glossary_recipe.yml
+source:
+  type: datahub-business-glossary
+  config:
+    file: catalog/glossary.yml
+
+sink:
+  type: datahub-rest
+  config:
+    server: ${DATAHUB_GMS_URL:-http://localhost:8080}
+    token: ${DATAHUB_GMS_TOKEN:-}          # only needed if metadata service auth is enabled

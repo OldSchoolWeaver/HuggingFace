@@ -1,0 +1,23 @@
+# DataHub ingestion: Postgres schema, table/column comments, row counts and column profiles.
+# Run from the project folder:  uv run datahub ingest -c catalog/postgres_recipe.yml
+source:
+  type: postgres
+  config:
+    host_port: localhost:${POSTGRES_PORT:-5432}
+    database: voltway
+    username: catalog_reader
+    password: ${CATALOG_READER_PASSWORD:-catalog}
+    schema_pattern:
+      allow: ["^fleet$"]
+    include_tables: true
+    include_views: true
+    profiling:
+      enabled: true          # min/max/distinct/null counts per column: gives the agent a feel for the values
+      profile_table_level_only: false
+      include_field_sample_values: false   # keep personal data (driver names, emails) out of the catalogue
+
+sink:
+  type: datahub-rest
+  config:
+    server: ${DATAHUB_GMS_URL:-http://localhost:8080}
+    token: ${DATAHUB_GMS_TOKEN:-}          # only needed if metadata service auth is enabled

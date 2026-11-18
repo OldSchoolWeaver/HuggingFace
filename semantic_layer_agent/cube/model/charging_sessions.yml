@@ -1,0 +1,54 @@
+cubes:
+  - name: charging_sessions
+    sql_table: fleet.charging_sessions
+    description: One row per charging session, with energy delivered and what it cost.
+
+    joins:
+      - name: vehicles
+        sql: "{CUBE}.vehicle_id = {vehicles.vehicle_id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: session_id
+        sql: session_id
+        type: number
+        primary_key: true
+      - name: started_at
+        sql: started_at
+        type: time
+      - name: network
+        sql: network
+        type: string
+        description: Charging operator, or "Depot" for the company's own chargers.
+      - name: charger_type
+        sql: charger_type
+        type: string
+        description: AC (depot) or DC (public fast charging).
+
+    measures:
+      - name: count
+        type: count
+        description: Number of charging sessions.
+      - name: total_energy_kwh
+        sql: energy_kwh
+        type: sum
+        description: Energy charged in kWh.
+      - name: total_cost_eur
+        sql: cost_eur
+        type: sum
+        format: currency
+        description: Amount paid for charging in EUR, including VAT.
+      - name: cost_per_kwh
+        sql: "{total_cost_eur} / NULLIF({total_energy_kwh}, 0)"
+        type: number
+        description: Average price paid per kWh in EUR (total cost / total energy).
+      - name: public_energy_kwh
+        sql: energy_kwh
+        type: sum
+        description: Energy charged on public DC networks, in kWh.
+        filters:
+          - sql: "{CUBE}.charger_type = 'DC'"
+      - name: public_charging_share
+        sql: "100.0 * {public_energy_kwh} / NULLIF({total_energy_kwh}, 0)"
+        type: number
+        description: Percentage of energy charged on public DC networks rather than at depots.

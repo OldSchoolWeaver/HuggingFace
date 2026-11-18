@@ -1,0 +1,36 @@
+cubes:
+  - name: maintenance_events
+    sql_table: fleet.maintenance_events
+    description: Maintenance and repair events, with cost and time off the road.
+
+    joins:
+      - name: vehicles
+        sql: "{CUBE}.vehicle_id = {vehicles.vehicle_id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: event_id
+        sql: event_id
+        type: number
+        primary_key: true
+      - name: event_date
+        sql: event_date
+        type: time
+      - name: category
+        sql: category
+        type: string
+        description: tyres, brakes, software_update, battery_check, bodywork or scheduled_service.
+
+    measures:
+      - name: count
+        type: count
+        description: Number of maintenance events.
+      - name: total_cost_eur
+        sql: cost_eur
+        type: sum
+        format: currency
+        description: Maintenance cost in EUR.
+      - name: total_downtime_hours
+        sql: downtime_hours
+        type: sum
+        description: Hours vehicles were off the road for maintenance.

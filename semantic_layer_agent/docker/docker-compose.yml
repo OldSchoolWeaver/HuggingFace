@@ -1,0 +1,105 @@
+# Voltway data ecosystem: every service in one Compose project, so `docker compose ps` shows them all.
+#
+#   Layer              Service                      Host port (change in .env)
+#   ─────────────────  ───────────────────────────  ──────────────────────────────────────
+#   Storage            postgres                     ${POSTGRES_PORT} (5432 inside the network)
+#   Query & compute    duckdb-mcp                   ${DUCKDB_MCP_PORT}  (DuckDB + MCP over HTTP)
+#   Semantic           cube                         ${CUBE_PORT} REST/Playground, ${CUBE_SQL_PORT} SQL API
+#   Storage access     postgres-mcp                 ${POSTGRES_MCP_PORT}  (read-only Postgres MCP over HTTP)
+#   Catalogue          frontend-quickstart          ${DATAHUB_MAPPED_FRONTEND_PORT} DataHub UI
+#                      datahub-gms-quickstart       ${DATAHUB_MAPPED_GMS_PORT} DataHub API (+ 4319, fixed)
+#                      datahub-actions-quickstart   –
+#                      system-update-quickstart     – (one-off: prepares MySQL/OpenSearch/Kafka, then exits)
+#                      mysql, opensearch,           3306, 9200, 9092
+#                      kafka-broker
+#
+# DataHub's services come from its official compose file (datahub/docker-compose.quickstart.yml, included
+# below) and are in the `quickstart` profile: COMPOSE_PROFILES=quickstart in .env turns them on.
+# All services share one network (datahub_network), so DataHub can also reach postgres:5432.
+#
+#   cd semantic_layer_agent
+#   docker compose -f docker/docker-compose.yml --env-file .env up -d --build    # start everything
+#   docker compose -f docker/docker-compose.yml --env-file .env ps               # what's running
+#   docker compose -f docker/docker-compose.yml --env-file .env down             # stop (keeps the data)
+#
+# scripts/setup.sh runs the `up` and then fills the catalogue.
+name: voltway
+
+include:
+  - datahub/docker-compose.quickstart.yml   # DataHub v1.7.0, unchanged official quickstart
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: voltway
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:-admin}
+      ANALYST_PASSWORD: ${ANALYST_PASSWORD:-analyst}
+      CATALOG_READER_PASSWORD: ${CATALOG_READER_PASSWORD:-catalog}
+      AGENT_DB_PASSWORD: ${AGENT_DB_PASSWORD:-agent}     # agent_app: owns agent_state (saved conversations)
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro   # schema, dummy data, roles, agent_state (first start)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d voltway"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  duckdb-mcp:
+    build: ./duckdb
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: voltway
+      PGUSER: analyst
+      PGPASSWORD: ${ANALYST_PASSWORD:-analyst}
+    ports:
+      - "${DUCKDB_MCP_PORT:-8001}:8000"
+    volumes:
+      - ./duckdb/data:/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres-mcp:
+    build:
+      context: ..
+      dockerfile: docker/postgres-mcp/Dockerfile
+    environment:
+      DATABASE_URI: postgresql://analyst:${ANALYST_PASSWORD:-analyst}@postgres:5432/voltway
+    ports:
+      - "${POSTGRES_MCP_PORT:-8002}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  cube:
+    image: cubejs/cube:v1.7.0
+    environment:
+      CUBEJS_DB_TYPE: postgres
+      CUBEJS_DB_HOST: postgres
+      CUBEJS_DB_PORT: "5432"
+      CUBEJS_DB_NAME: voltway
+      CUBEJS_DB_USER: analyst
+      CUBEJS_DB_PASS: ${ANALYST_PASSWORD:-analyst}
+      CUBEJS_API_SECRET: ${CUBEJS_API_SECRET:-local-dev-cube-secret-change-me-0123456789}
+      CUBEJS_DEV_MODE: "true"                       # local only: Playground on :4001, no JWT check
+      CUBEJS_PG_SQL_PORT: "15432"                   # Postgres-compatible SQL API
+      CUBEJS_SQL_USER: cube
+      CUBEJS_SQL_PASSWORD: ${CUBEJS_SQL_PASSWORD:-cube}
+      CUBEJS_TELEMETRY: "false"
+    ports:
+      - "${CUBE_PORT:-4001}:4000"
+      - "${CUBE_SQL_PORT:-15432}:15432"
+    volumes:
+      - ../cube:/cube/conf
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

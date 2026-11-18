@@ -1,0 +1,50 @@
+# Business glossary for the Voltway fleet. Explicit ids keep the term URNs stable:
+# urn:li:glossaryTerm:<id>. enrich_catalog.py attaches these terms to tables and columns.
+version: "1"
+source: Voltway
+owners:
+  users:
+    - datahub
+nodes:
+  - name: Fleet Metrics
+    id: fleet_metrics
+    description: Governed fleet KPIs. Each is defined once in the Cube semantic layer.
+    terms:
+      - name: Energy Efficiency
+        id: fleet.energy_efficiency
+        description: >
+          kWh used per 100 km driven: 100 x total energy used / total distance, over all trips in scope.
+          Not an average of per-trip values. Lower is better. Cube: trips.energy_per_100km.
+      - name: Charging Cost per kWh
+        id: fleet.charging_cost_per_kwh
+        description: >
+          Average price paid per kWh charged: total charging cost (EUR, incl. VAT) / total energy charged.
+          Cube: charging_sessions.cost_per_kwh.
+      - name: Public Charging Share
+        id: fleet.public_charging_share
+        description: >
+          Percentage of energy charged on public DC networks instead of depot AC chargers.
+          Public charging costs about three times more per kWh. Cube: charging_sessions.public_charging_share.
+      - name: Fleet Size
+        id: fleet.fleet_size
+        description: >
+          Number of vehicles in service, i.e. status = 'active'. Vehicles in maintenance and retired
+          vehicles are not counted. Cube: vehicles.active_count.
+      - name: Downtime
+        id: fleet.downtime
+        description: >
+          Hours a vehicle is off the road because of maintenance. Cube: maintenance_events.total_downtime_hours.
+      - name: Depot Tariff
+        id: fleet.depot_tariff
+        description: >
+          Daily electricity price paid at depot chargers (EUR/kWh). Published in the energy_prices file,
+          queried through DuckDB as files.energy_prices.
+  - name: Data Classification
+    id: classification
+    description: How sensitive a piece of data is.
+    terms:
+      - name: Personal Data
+        id: classification.personal_data
+        description: >
+          Identifies a person (name, email). Do not show it in answers unless the user explicitly needs it;
+          aggregate by depot or region instead.
