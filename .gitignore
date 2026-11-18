@@ -16,3 +16,8 @@ sandbox/
 # semantic_layer_agent: Cube Store data and local eval results
 semantic_layer_agent/cube/.cubestore/
 semantic_layer_agent/evals/results/
+
+# agentic_frameworks: SQLite run state (e.g. the google_sdk todo board and its WAL files)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
