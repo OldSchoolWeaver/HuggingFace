@@ -21,3 +21,14 @@ semantic_layer_agent/evals/results/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+
+# Node (frontends): installed packages and build output
+node_modules/
+mcp-servers/frontend/dist/
+
+# mcp-servers: the agents' long-term memories (knowledge graph, vector store) are run-time data and can hold
+# personal information; accounts.db and memory/*.db are already covered by *.db
+mcp-servers/memory/
+
+# Jupyter autosave copies
+.ipynb_checkpoints/
